@@ -77,7 +77,7 @@ const pageUtmConfig = {
     utm_content: 'cta_formulaire',
     utm_term: ''
   },
-    '/offre-entreprise': {
+	'/offre-entreprise': {
     utm_source: 'website',
     utm_medium: 'organic_search',
     utm_campaign: 'offre_entreprise',
