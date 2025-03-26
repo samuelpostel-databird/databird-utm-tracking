@@ -1,6 +1,3 @@
-// Logs d'initialisation
-console.log("[UTM Tracking] Script chargé à", new Date().toISOString());
-
 // Configuration des UTMs par défaut
 const DEFAULT_UTMS = {
   utm_source: 'website',
@@ -351,12 +348,9 @@ const PAGE_UTM_CONFIG = {
 
 // Fonction pour obtenir les UTMs correspondant au chemin actuel
 function getPathUtms(path) {
-  console.log("[UTM Tracking] Analyse du chemin:", path);
-  
   // Cas spécial pour les pages campus
   if (path.startsWith('/campus/') && path !== '/campus/') {
     const cityName = path.split('/').pop();
-    console.log("[UTM Tracking] Page campus détectée pour:", cityName);
     return {
       ...DEFAULT_UTMS,
       utm_source: 'website',
@@ -368,12 +362,10 @@ function getPathUtms(path) {
   
   // Vérification directe dans la configuration
   if (PAGE_UTM_CONFIG[path]) {
-    console.log("[UTM Tracking] Configuration trouvée pour le chemin actuel");
     return {...DEFAULT_UTMS, ...PAGE_UTM_CONFIG[path]};
   }
   
   // Valeurs par défaut si aucune correspondance
-  console.log("[UTM Tracking] Aucune configuration spécifique trouvée, utilisation des valeurs par défaut");
   return {...DEFAULT_UTMS};
 }
 
@@ -384,47 +376,31 @@ function getUrlUtms() {
   ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(param => {
     if (urlParams.has(param)) utmParams[param] = urlParams.get(param);
   });
-  
-  if (Object.keys(utmParams).length > 0) {
-    console.log("[UTM Tracking] UTMs trouvés dans l'URL:", utmParams);
-  } else {
-    console.log("[UTM Tracking] Aucun UTM trouvé dans l'URL");
-  }
-  
   return utmParams;
 }
 
 // Fonction pour obtenir les UTMs finaux
 function getFinalUtms() {
-  console.log("[UTM Tracking] Calcul des UTMs finaux...");
-  
   const storedUtms = JSON.parse(sessionStorage.getItem('initialUtms') || 'null');
   const urlUtms = getUrlUtms();
   const pathUtms = getPathUtms(window.location.pathname);
   
   // Priorité: 1. UTMs stockés 2. UTMs d'URL 3. UTMs du chemin
   if (storedUtms) {
-    console.log("[UTM Tracking] Utilisation des UTMs stockés en session:", storedUtms);
     return storedUtms;
   } else if (Object.keys(urlUtms).length > 0) {
     const finalUtms = {...pathUtms, ...urlUtms};
     sessionStorage.setItem('initialUtms', JSON.stringify(finalUtms));
-    console.log("[UTM Tracking] UTMs de l'URL enregistrés en session:", finalUtms);
     return finalUtms;
   } else {
-    console.log("[UTM Tracking] Utilisation des UTMs basés sur le chemin:", pathUtms);
     return pathUtms;
   }
 }
 
 // Fonction pour ajouter les UTMs au formulaire
 function addUtmsToForm(form) {
-  if (!form) {
-    console.log("[UTM Tracking] Aucun formulaire trouvé pour ajouter les UTMs");
-    return;
-  }
+  if (!form) return;
   
-  console.log("[UTM Tracking] Ajout des UTMs au formulaire:", form);
   const utmParams = getFinalUtms();
   
   for (const [key, value] of Object.entries(utmParams)) {
@@ -434,9 +410,6 @@ function addUtmsToForm(form) {
       input.type = 'hidden';
       input.name = key;
       form.appendChild(input);
-      console.log(`[UTM Tracking] Champ ${key} créé avec la valeur: ${value}`);
-    } else {
-      console.log(`[UTM Tracking] Champ ${key} existant mis à jour avec la valeur: ${value}`);
     }
     input.value = value;
   }
@@ -444,57 +417,35 @@ function addUtmsToForm(form) {
 
 // Fonction pour trouver le formulaire
 function findForm(container) {
-  if (!container) {
-    console.log("[UTM Tracking] Aucun conteneur de formulaire trouvé");
-    return null;
-  }
+  if (!container) return null;
   
   // Recherche dans le conteneur direct
   const directForm = container.querySelector('form');
-  if (directForm) {
-    console.log("[UTM Tracking] Formulaire direct trouvé");
-    return directForm;
-  }
+  if (directForm) return directForm;
   
   // Recherche dans les iframes
   const iframes = container.querySelectorAll('iframe');
-  console.log(`[UTM Tracking] Recherche dans ${iframes.length} iframes`);
-  
   for (let iframe of iframes) {
     try {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
       if (iframeDoc) {
         const iframeForm = iframeDoc.querySelector('form');
-        if (iframeForm) {
-          console.log("[UTM Tracking] Formulaire trouvé dans iframe");
-          return iframeForm;
-        }
+        if (iframeForm) return iframeForm;
       }
     } catch (e) {
-      console.log("[UTM Tracking] Erreur d'accès à l'iframe (même origine):", e.message);
+      // Erreur de même origine, on continue
     }
   }
   
   // Fallback sur les éléments qui ressemblent à des formulaires
-  const hsForm = container.querySelector('.hs-form');
-  if (hsForm) {
-    console.log("[UTM Tracking] Formulaire HubSpot (.hs-form) trouvé");
-    return hsForm;
-  }
-  
-  console.log("[UTM Tracking] Aucun formulaire trouvé après recherche approfondie");
-  return null;
+  return container.querySelector('.hs-form');
 }
 
 // Fonction pour traiter le planificateur de réunions HubSpot
 function processMeetingsWidget() {
   const widget = document.querySelector('.meetings-iframe-container iframe');
-  if (!widget) {
-    console.log("[UTM Tracking] Aucun widget de réunions trouvé");
-    return false;
-  }
+  if (!widget) return false;
   
-  console.log("[UTM Tracking] Widget de réunions HubSpot trouvé");
   const utms = getFinalUtms();
   const url = new URL(widget.src);
   
@@ -502,70 +453,42 @@ function processMeetingsWidget() {
     url.searchParams.set(key, value);
   }
   
-  console.log("[UTM Tracking] URL du widget mise à jour:", url.toString());
   widget.src = url.toString();
   return true;
 }
 
 // Fonction principale pour gérer les formulaires
 function processForm() {
-  console.log("[UTM Tracking] Recherche et traitement des formulaires...");
-  
   // Vérifier d'abord si nous avons un widget de réunions
-  if (processMeetingsWidget()) {
-    console.log("[UTM Tracking] Widget de réunions traité avec succès");
-    return;
-  }
+  if (processMeetingsWidget()) return;
   
   // Sinon chercher le formulaire HubSpot
   const container = document.querySelector('[data-hubspot-form-container="true"]');
-  if (container) {
-    console.log("[UTM Tracking] Conteneur HubSpot trouvé");
-  } else {
-    console.log("[UTM Tracking] Aucun conteneur HubSpot trouvé");
-  }
-  
   const form = findForm(container);
   
   if (form) {
-    console.log("[UTM Tracking] Formulaire trouvé, ajout des UTMs");
     addUtmsToForm(form);
     
     // S'assurer que les UTMs sont toujours présents lors de la soumission
     if (!form._utmListenerAdded) {
-      form.addEventListener('submit', () => {
-        console.log("[UTM Tracking] Soumission de formulaire détectée, réapplication des UTMs");
-        addUtmsToForm(form);
-      });
+      form.addEventListener('submit', () => addUtmsToForm(form));
       form._utmListenerAdded = true;
-      console.log("[UTM Tracking] Écouteur d'événement de soumission ajouté au formulaire");
     }
-  } else {
-    console.log("[UTM Tracking] Aucun formulaire trouvé pour le moment");
   }
 }
 
 // Fonction d'initialisation avec une approche progressive
 function init() {
-  console.log("[UTM Tracking] Initialisation du système de suivi UTM");
-  
   // Première tentative immédiate
   processForm();
   
   // Tentatives additionnelles à différents intervalles
   [1000, 2000, 3000, 5000].forEach(delay => {
-    setTimeout(() => {
-      console.log(`[UTM Tracking] Nouvelle tentative après ${delay}ms`);
-      processForm();
-    }, delay);
+    setTimeout(processForm, delay);
   });
   
   // Observer les modifications du DOM
-  console.log("[UTM Tracking] Configuration de l'observateur de mutations DOM");
-  const observer = new MutationObserver((mutations) => {
-    console.log(`[UTM Tracking] ${mutations.length} mutations DOM détectées, vérification des formulaires`);
-    processForm();
-  });
+  const observer = new MutationObserver(() => processForm());
   
   // Observer le body pour les changements dynamiques
   observer.observe(document.body, { 
@@ -574,23 +497,12 @@ function init() {
   });
   
   // Arrêter l'observation après 30 secondes pour économiser des ressources
-  setTimeout(() => {
-    console.log("[UTM Tracking] Arrêt de l'observateur de mutations après 30s");
-    observer.disconnect();
-  }, 30000);
+  setTimeout(() => observer.disconnect(), 30000);
 }
 
 // Démarrer quand le DOM est prêt
 if (document.readyState !== 'loading') {
-  console.log("[UTM Tracking] DOM déjà prêt, initialisation immédiate");
   init();
 } else {
-  console.log("[UTM Tracking] En attente du chargement du DOM complet");
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log("[UTM Tracking] Événement DOMContentLoaded déclenché, initialisation");
-    init();
-  });
+  document.addEventListener('DOMContentLoaded', init);
 }
-
-// Log final
-console.log("[UTM Tracking] Script de suivi UTM complètement chargé");
