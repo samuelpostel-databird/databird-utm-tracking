@@ -7,7 +7,7 @@ const DEFAULT_UTMS = {
   utm_term: ''
 };
 
-// Configuration complète des UTMs par page (préservation de toutes les pages originales)
+// Configuration complète des UTMs par page
 const PAGE_UTM_CONFIG = {
   '/': {
     utm_source: 'website',
@@ -346,7 +346,7 @@ const PAGE_UTM_CONFIG = {
   }
 };
 
-// Fonction pour obtenir les UTMs correspondant au chemin actuel avec gestion des cas spéciaux
+// Fonction pour obtenir les UTMs correspondant au chemin actuel
 function getPathUtms(path) {
   // Cas spécial pour les pages campus
   if (path.startsWith('/campus/') && path !== '/campus/') {
@@ -477,26 +477,20 @@ function processForm() {
   }
 }
 
-// Initialisation avec une approche plus robuste
+// Fonction d'initialisation avec une approche progressive
 function init() {
   // Première tentative immédiate
   processForm();
   
-  // Deuxième tentative après un délai
-  setTimeout(processForm, 1000);
-  
-  // Tentatives additionnelles pour les chargements plus lents
-  const checkIntervals = [2000, 3000, 5000];
-  checkIntervals.forEach(delay => {
+  // Tentatives additionnelles à différents intervalles
+  [1000, 2000, 3000, 5000].forEach(delay => {
     setTimeout(processForm, delay);
   });
   
-  // Observer les modifications du DOM pour les formulaires chargés dynamiquement
-  const observer = new MutationObserver(() => {
-    processForm();
-  });
+  // Observer les modifications du DOM
+  const observer = new MutationObserver(() => processForm());
   
-  // Observer le body pour tous les changements potentiels
+  // Observer le body pour les changements dynamiques
   observer.observe(document.body, { 
     childList: true, 
     subtree: true 
