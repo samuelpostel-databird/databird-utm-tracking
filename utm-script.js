@@ -1,3 +1,281 @@
+// =========================================
+// SYSTÈME DE LOGS AVANCÉ
+// =========================================
+function setupLoggingSystem() {
+  // Créer le conteneur de logs visibles
+  const logContainer = document.createElement('div');
+  logContainer.id = 'utm-log-container';
+  logContainer.style.cssText = `
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 350px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.85);
+    color: #00ff00;
+    font-family: monospace;
+    font-size: 11px;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 9999999;
+    display: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  `;
+
+  const logHeader = document.createElement('div');
+  logHeader.textContent = 'UTM Tracking Logs (Ctrl+Alt+U pour afficher/masquer)';
+  logHeader.style.cssText = `
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  `;
+  
+  const logActions = document.createElement('div');
+  logActions.style.cssText = `
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  `;
+  
+  const clearButton = document.createElement('button');
+  clearButton.textContent = 'Effacer';
+  clearButton.style.cssText = `
+    background: #333;
+    color: white;
+    border: none;
+    padding: 2px 5px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 10px;
+  `;
+  clearButton.onclick = () => {
+    const logContent = document.getElementById('utm-log-content');
+    if (logContent) logContent.innerHTML = '';
+    localStorage.removeItem('utm_tracking_logs');
+  };
+  
+  const copyButton = document.createElement('button');
+  copyButton.textContent = 'Copier';
+  copyButton.style.cssText = `
+    background: #333;
+    color: white;
+    border: none;
+    padding: 2px 5px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 10px;
+  `;
+  copyButton.onclick = () => {
+    const logs = JSON.parse(localStorage.getItem('utm_tracking_logs') || '[]');
+    const text = logs.map(log => `${new Date(log.timestamp).toLocaleString()} - ${log.message}`).join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+      const copyMsg = document.createElement('div');
+      copyMsg.textContent = 'Logs copiés!';
+      copyMsg.style.cssText = `
+        color: yellow;
+        font-size: 10px;
+        margin-top: 2px;
+        text-align: center;
+      `;
+      logActions.appendChild(copyMsg);
+      setTimeout(() => copyMsg.remove(), 2000);
+    });
+  };
+  
+  logActions.appendChild(clearButton);
+  logActions.appendChild(copyButton);
+  
+  const logContent = document.createElement('div');
+  logContent.id = 'utm-log-content';
+  logContent.style.cssText = `
+    max-height: 250px;
+    overflow-y: auto;
+  `;
+  
+  logContainer.appendChild(logHeader);
+  logContainer.appendChild(logActions);
+  logContainer.appendChild(logContent);
+  
+  // Créer l'indicateur d'état
+  const statusIndicator = document.createElement('div');
+  statusIndicator.id = 'utm-status-indicator';
+  statusIndicator.style.cssText = `
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #999;
+    z-index: 9999998;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+  `;
+  
+  // Cliquer sur l'indicateur affiche aussi les logs
+  statusIndicator.onclick = () => {
+    logContainer.style.display = logContainer.style.display === 'none' ? 'block' : 'none';
+  };
+  
+  // Ajouter les éléments au DOM
+  document.body.appendChild(logContainer);
+  document.body.appendChild(statusIndicator);
+  
+  // Raccourci clavier pour afficher/masquer les logs
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.altKey && e.key === 'u') {
+      logContainer.style.display = logContainer.style.display === 'none' ? 'block' : 'none';
+    }
+  });
+  
+  // Fonction unifiée pour les logs
+  function logMessage(message, level = 'info') {
+    // 1. Log dans la console standard
+    console.log(`[UTM Tracking] ${message}`);
+    
+    // 2. Stocker dans localStorage
+    const logs = JSON.parse(localStorage.getItem('utm_tracking_logs') || '[]');
+    logs.push({
+      timestamp: new Date().toISOString(),
+      message: message,
+      level: level
+    });
+    
+    // Garder seulement les 100 derniers logs
+    if (logs.length > 100) logs.shift();
+    localStorage.setItem('utm_tracking_logs', JSON.stringify(logs));
+    
+    // 3. Ajouter au log visuel
+    if (document.getElementById('utm-log-content')) {
+      const logEntry = document.createElement('div');
+      
+      // Formater l'heure
+      const now = new Date();
+      const time = [now.getHours(), now.getMinutes(), now.getSeconds()]
+        .map(unit => unit.toString().padStart(2, '0'))
+        .join(':');
+      
+      logEntry.innerHTML = `<span style="color:#999;font-size:9px;">${time}</span> ${message}`;
+      logEntry.style.borderBottom = '1px dotted #333';
+      logEntry.style.paddingBottom = '3px';
+      logEntry.style.marginBottom = '3px';
+      
+      // Coloration selon le niveau
+      switch(level) {
+        case 'success':
+          logEntry.style.color = '#4CAF50';
+          break;
+        case 'warning':
+          logEntry.style.color = '#FFC107';
+          break;
+        case 'error':
+          logEntry.style.color = '#F44336';
+          break;
+        default:
+          logEntry.style.color = '#00ff00';
+      }
+      
+      document.getElementById('utm-log-content').appendChild(logEntry);
+      document.getElementById('utm-log-content').scrollTop = document.getElementById('utm-log-content').scrollHeight;
+    }
+    
+    // 4. Mettre à jour l'indicateur visuel (seulement pour changements d'état majeurs)
+    if (level !== 'info') {
+      updateStatus(level, message);
+    }
+  }
+  
+  // Fonction pour mettre à jour l'indicateur d'état
+  function updateStatus(status, message) {
+    const indicator = document.getElementById('utm-status-indicator');
+    if (!indicator) return;
+    
+    switch(status) {
+      case 'success':
+        indicator.style.backgroundColor = '#4CAF50';
+        break;
+      case 'warning':
+        indicator.style.backgroundColor = '#FFC107';
+        break;
+      case 'error':
+        indicator.style.backgroundColor = '#F44336';
+        break;
+      default:
+        indicator.style.backgroundColor = '#2196F3';
+    }
+    
+    indicator.title = message;
+  }
+  
+  // Charger les logs existants
+  function loadExistingLogs() {
+    const logs = JSON.parse(localStorage.getItem('utm_tracking_logs') || '[]');
+    const logContent = document.getElementById('utm-log-content');
+    
+    if (!logContent || logs.length === 0) return;
+    
+    logContent.innerHTML = '';
+    logs.forEach(log => {
+      const logEntry = document.createElement('div');
+      const logTime = new Date(log.timestamp);
+      const time = [logTime.getHours(), logTime.getMinutes(), logTime.getSeconds()]
+        .map(unit => unit.toString().padStart(2, '0'))
+        .join(':');
+      
+      logEntry.innerHTML = `<span style="color:#999;font-size:9px;">${time}</span> ${log.message}`;
+      logEntry.style.borderBottom = '1px dotted #333';
+      logEntry.style.paddingBottom = '3px';
+      logEntry.style.marginBottom = '3px';
+      
+      switch(log.level) {
+        case 'success':
+          logEntry.style.color = '#4CAF50';
+          break;
+        case 'warning':
+          logEntry.style.color = '#FFC107';
+          break;
+        case 'error':
+          logEntry.style.color = '#F44336';
+          break;
+        default:
+          logEntry.style.color = '#00ff00';
+      }
+      
+      logContent.appendChild(logEntry);
+    });
+    
+    logContent.scrollTop = logContent.scrollHeight;
+  }
+  
+  // Exposer la fonction de logs globalement
+  window.utmLog = logMessage;
+  
+  // Fonction pour afficher les logs dans la console
+  window.showUTMLogs = function() {
+    const logs = JSON.parse(localStorage.getItem('utm_tracking_logs') || '[]');
+    console.table(logs);
+    return logs;
+  };
+  
+  // Charger les logs existants
+  setTimeout(loadExistingLogs, 500);
+  
+  logMessage('Système de logs UTM initialisé', 'success');
+  
+  return logMessage;
+}
+
+// Initialiser le système de logs
+const log = setupLoggingSystem();
+
+// =========================================
+// SCRIPT PRINCIPAL DE TRACKING UTM
+// =========================================
+
 // Configuration des UTMs par défaut
 const DEFAULT_UTMS = {
   utm_source: 'website',
@@ -348,9 +626,12 @@ const PAGE_UTM_CONFIG = {
 
 // Fonction pour obtenir les UTMs correspondant au chemin actuel
 function getPathUtms(path) {
+  log(`Analyse du chemin: ${path}`);
+  
   // Cas spécial pour les pages campus
   if (path.startsWith('/campus/') && path !== '/campus/') {
     const cityName = path.split('/').pop();
+    log(`Page campus détectée pour: ${cityName}`);
     return {
       ...DEFAULT_UTMS,
       utm_source: 'website',
@@ -362,10 +643,12 @@ function getPathUtms(path) {
   
   // Vérification directe dans la configuration
   if (PAGE_UTM_CONFIG[path]) {
+    log(`Configuration trouvée pour le chemin actuel: ${path}`, 'success');
     return {...DEFAULT_UTMS, ...PAGE_UTM_CONFIG[path]};
   }
   
   // Valeurs par défaut si aucune correspondance
+  log(`Aucune configuration spécifique trouvée pour: ${path}, utilisation des valeurs par défaut`, 'warning');
   return {...DEFAULT_UTMS};
 }
 
@@ -376,31 +659,47 @@ function getUrlUtms() {
   ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(param => {
     if (urlParams.has(param)) utmParams[param] = urlParams.get(param);
   });
+  
+  if (Object.keys(utmParams).length > 0) {
+    log(`UTMs trouvés dans l'URL: ${JSON.stringify(utmParams)}`, 'success');
+  } else {
+    log(`Aucun UTM trouvé dans l'URL`);
+  }
+  
   return utmParams;
 }
 
 // Fonction pour obtenir les UTMs finaux
 function getFinalUtms() {
+  log(`Calcul des UTMs finaux...`);
+  
   const storedUtms = JSON.parse(sessionStorage.getItem('initialUtms') || 'null');
   const urlUtms = getUrlUtms();
   const pathUtms = getPathUtms(window.location.pathname);
   
   // Priorité: 1. UTMs stockés 2. UTMs d'URL 3. UTMs du chemin
   if (storedUtms) {
+    log(`Utilisation des UTMs stockés en session: ${JSON.stringify(storedUtms)}`, 'success');
     return storedUtms;
   } else if (Object.keys(urlUtms).length > 0) {
     const finalUtms = {...pathUtms, ...urlUtms};
     sessionStorage.setItem('initialUtms', JSON.stringify(finalUtms));
+    log(`UTMs de l'URL enregistrés en session: ${JSON.stringify(finalUtms)}`, 'success');
     return finalUtms;
   } else {
+    log(`Utilisation des UTMs basés sur le chemin: ${JSON.stringify(pathUtms)}`);
     return pathUtms;
   }
 }
 
 // Fonction pour ajouter les UTMs au formulaire
 function addUtmsToForm(form) {
-  if (!form) return;
+  if (!form) {
+    log(`Aucun formulaire trouvé pour ajouter les UTMs`, 'warning');
+    return;
+  }
   
+  log(`Ajout des UTMs au formulaire: ${form.id || 'sans ID'}`);
   const utmParams = getFinalUtms();
   
   for (const [key, value] of Object.entries(utmParams)) {
@@ -410,42 +709,69 @@ function addUtmsToForm(form) {
       input.type = 'hidden';
       input.name = key;
       form.appendChild(input);
+      log(`Champ ${key} créé avec la valeur: ${value}`);
+    } else {
+      log(`Champ ${key} existant mis à jour avec la valeur: ${value}`);
     }
     input.value = value;
   }
+  
+  log(`UTMs ajoutés au formulaire avec succès`, 'success');
 }
 
 // Fonction pour trouver le formulaire
 function findForm(container) {
-  if (!container) return null;
+  if (!container) {
+    log(`Aucun conteneur de formulaire trouvé`, 'warning');
+    return null;
+  }
   
   // Recherche dans le conteneur direct
   const directForm = container.querySelector('form');
-  if (directForm) return directForm;
+  if (directForm) {
+    log(`Formulaire direct trouvé`, 'success');
+    return directForm;
+  }
   
   // Recherche dans les iframes
   const iframes = container.querySelectorAll('iframe');
+  log(`Recherche dans ${iframes.length} iframes`);
+  
   for (let iframe of iframes) {
     try {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
       if (iframeDoc) {
         const iframeForm = iframeDoc.querySelector('form');
-        if (iframeForm) return iframeForm;
+        if (iframeForm) {
+          log(`Formulaire trouvé dans iframe`, 'success');
+          return iframeForm;
+        }
       }
     } catch (e) {
-      // Erreur de même origine, on continue
+      log(`Erreur d'accès à l'iframe (même origine): ${e.message}`, 'error');
     }
   }
   
   // Fallback sur les éléments qui ressemblent à des formulaires
-  return container.querySelector('.hs-form');
+  const hsForm = container.querySelector('.hs-form');
+  if (hsForm) {
+    log(`Formulaire HubSpot (.hs-form) trouvé`, 'success');
+    return hsForm;
+  }
+  
+  log(`Aucun formulaire trouvé après recherche approfondie`, 'warning');
+  return null;
 }
 
 // Fonction pour traiter le planificateur de réunions HubSpot
 function processMeetingsWidget() {
   const widget = document.querySelector('.meetings-iframe-container iframe');
-  if (!widget) return false;
+  if (!widget) {
+    log(`Aucun widget de réunions trouvé`);
+    return false;
+  }
   
+  log(`Widget de réunions HubSpot trouvé`);
   const utms = getFinalUtms();
   const url = new URL(widget.src);
   
@@ -453,56 +779,40 @@ function processMeetingsWidget() {
     url.searchParams.set(key, value);
   }
   
+  log(`URL du widget mise à jour: ${url.toString()}`, 'success');
   widget.src = url.toString();
   return true;
 }
 
 // Fonction principale pour gérer les formulaires
 function processForm() {
+  log(`Recherche et traitement des formulaires...`);
+  
   // Vérifier d'abord si nous avons un widget de réunions
-  if (processMeetingsWidget()) return;
+  if (processMeetingsWidget()) {
+    log(`Widget de réunions traité avec succès`, 'success');
+    return;
+  }
   
   // Sinon chercher le formulaire HubSpot
   const container = document.querySelector('[data-hubspot-form-container="true"]');
+  if (container) {
+    log(`Conteneur HubSpot trouvé`);
+  } else {
+    log(`Aucun conteneur HubSpot trouvé`, 'warning');
+  }
+  
   const form = findForm(container);
   
   if (form) {
+    log(`Formulaire trouvé, ajout des UTMs`);
     addUtmsToForm(form);
     
     // S'assurer que les UTMs sont toujours présents lors de la soumission
     if (!form._utmListenerAdded) {
-      form.addEventListener('submit', () => addUtmsToForm(form));
+      form.addEventListener('submit', () => {
+        log(`Soumission de formulaire détectée, réapplication des UTMs`);
+        addUtmsToForm(form);
+      });
       form._utmListenerAdded = true;
-    }
-  }
-}
-
-// Fonction d'initialisation avec une approche progressive
-function init() {
-  // Première tentative immédiate
-  processForm();
-  
-  // Tentatives additionnelles à différents intervalles
-  [1000, 2000, 3000, 5000].forEach(delay => {
-    setTimeout(processForm, delay);
-  });
-  
-  // Observer les modifications du DOM
-  const observer = new MutationObserver(() => processForm());
-  
-  // Observer le body pour les changements dynamiques
-  observer.observe(document.body, { 
-    childList: true, 
-    subtree: true 
-  });
-  
-  // Arrêter l'observation après 30 secondes pour économiser des ressources
-  setTimeout(() => observer.disconnect(), 30000);
-}
-
-// Démarrer quand le DOM est prêt
-if (document.readyState !== 'loading') {
-  init();
-} else {
-  document.addEventListener('DOMContentLoaded', init);
-}
+      log(`Écouteur d'événement de soumission aj
