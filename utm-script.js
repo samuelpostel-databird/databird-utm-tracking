@@ -24,13 +24,10 @@ function setupLoggingSystem() {
   `;
 
   const logHeader = document.createElement('div');
-  logHeader.textContent = 'UTM Tracking Logs (Ctrl+Alt+U pour afficher/masquer)';
-  logHeader.style.cssText = `
-    border-bottom: 1px solid #00ff00;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
-    font-weight: bold;
-  `;
+// Texte d'aide multiplateforme
+  logHeader.textContent = navigator.platform.includes('Mac') 
+  ? 'UTM Tracking Logs (⌘+⌥+U pour afficher/masquer)' 
+  : 'UTM Tracking Logs (Ctrl+Alt+U pour afficher/masquer)';
   
   const logActions = document.createElement('div');
   logActions.style.cssText = `
@@ -125,12 +122,14 @@ function setupLoggingSystem() {
   document.body.appendChild(logContainer);
   document.body.appendChild(statusIndicator);
   
-  // Raccourci clavier pour afficher/masquer les logs
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.altKey && e.key === 'u') {
-      logContainer.style.display = logContainer.style.display === 'none' ? 'block' : 'none';
-    }
-  });
+  // Raccourci clavier pour afficher/masquer les logs (compatible Mac et Windows)
+document.addEventListener('keydown', (e) => {
+  // Pour Mac: Command (metaKey) + Option (altKey) + U
+  // Pour Windows/Linux: Ctrl (ctrlKey) + Alt (altKey) + U
+  if ((e.metaKey && e.altKey && e.key === 'u') || (e.ctrlKey && e.altKey && e.key === 'u')) {
+    logContainer.style.display = logContainer.style.display === 'none' ? 'block' : 'none';
+  }
+});
   
   // Fonction unifiée pour les logs
   function logMessage(message, level = 'info') {
