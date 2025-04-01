@@ -334,6 +334,11 @@ const PAGE_UTM_CONFIG = {
     utm_medium: 'paid_social',
     utm_campaign: ''
   },
+  '/activation/offre-data-ia': {
+    utm_source: '',
+    utm_medium: '',
+    utm_campaign: 'OP_Avril_2025_losts'
+  },
   '/c/meta/reconversion-recherche-demploi': {
     utm_source: 'facebook',
     utm_medium: 'paid_social',
