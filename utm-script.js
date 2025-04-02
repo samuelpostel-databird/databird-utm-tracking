@@ -1,513 +1,77 @@
-// Configuration des UTMs par défaut
-const DEFAULT_UTMS = {
-  utm_source: 'website',
-  utm_medium: 'unknown_page',
-  utm_campaign: 'general',
-  utm_content: 'cta_formulaire',
-  utm_term: ''
+// ✅ Script UTM complet prêt à héberger sur GitHub
+
+// 1. Configuration globale des UTMs par page
+window.PAGE_UTM_CONFIG = {
+  '/': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'homepage' },
+  '/formation-data-analyst': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_generaliste' },
+  '/formation-data-analyst/paris': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_paris' },
+  '/formation-data-analyst/a-distance': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_distance' },
+  '/formation-data-analyst/champion': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_champion' },
+  '/formation-data-analyst/essentials': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_essentials' },
+  '/formation-data-scientist': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_scientist_generaliste' },
+  '/formation-data-scientist/champion': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_scientist_champion' },
+  '/formation-data-engineer': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_engineer_generaliste' },
+  '/formation-data-engineer/analytics-engineer-databird-datagen': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'analytics_engineer' },
+  '/formation-gen-ai': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai' },
+  '/offre-entreprise': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'offre_entreprise' },
+  '/formation/excel': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_excel' },
+  '/formation/power-bi': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_powerbi' },
+  '/formation/google-sheets': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_google_sheets' },
+  '/formation/looker-studio': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_looker_studio' },
+  '/formation/python': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_python' },
+  '/formation/sql': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_sql' },
+  '/formation/tableau-software': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_tableau' },
+  '/certification/excel': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'certification_excel' },
+  '/certification/power-bi': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'certification_powerbi' },
+  '/campus/': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analyst_distance' },
+  '/cours-gratuit/': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'cours_gratuit_général' },
+  '/cours-gratuit/les-bases-de-sql-a-ta-portee': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'cours_gratuit_sql' },
+  '/cours-gratuit/dbt': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'cours_gratuit_dbt' },
+  '/cours-gratuit/excel': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'cours_gratuit_excel' },
+  '/cours-gratuit/le-jargon-de-la-data': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'cours_gratuit_acculturation_data' },
+  '/qui-sommes-nous': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'qui_sommes_nous' },
+  '/parrainage': { utm_source: 'website', utm_medium: 'referral', utm_campaign: 'parrainage' },
+  '/faq': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'faq' },
+  '/activation/offre-data-ia': { utm_source: '', utm_medium: '', utm_campaign: 'OP_Avril_2025_losts' },
+  '/c/google/formation-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/formation-data-analyst-temps-partiel': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/formation-sql-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-excel-certifiante': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/formation-data-analyst-temps-plein': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-paris-v2': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-paris': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/formation-certifiante-power-bi': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-power-bi-certifiante-v2': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-power-bi-certifiante': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/partenariat-malt-x-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-a-distance': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-engineer': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/formation-tableau-software-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-tableau-software': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-sql': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-toulouse': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-lille': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-lyon': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-nantes': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-nice': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-rennes': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-grenoble': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-marseille': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-montpellier': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-strasbourg': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/google/formation-data-analyst-bordeaux': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/meta/data-recrutement-quel-marche-en-2024': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/c/meta/data-analyst-preparer-son-entretien-dembauche': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/c/meta/salaire-data-analyst': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/c/meta/montees-en-competences': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/c/meta/reconversion': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/c/meta/data-essentials': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/c/meta/formation-data-analyst': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/activation/offre-noel-databird-2024': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/c/meta/reconversion-recherche-demploi': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/c/meta/data-ia-report': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' }
 };
 
-// Configuration complète des UTMs par page
-const PAGE_UTM_CONFIG = {
-  '/': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'homepage'
-  },
-  '/formation-data-analyst': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_analytics_generaliste'
-  },
-  '/formation-data-analyst/paris': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_analytics_paris'
-  },
-  '/formation-data-analyst/a-distance': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_analytics_distance'
-  },
-  '/formation-data-analyst/champion': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_analytics_champion'
-  },
-  '/formation-data-analyst/essentials': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_analytics_essentials'
-  },
-  '/formation-data-scientist': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_scientist_generaliste'
-  },
-  '/formation-data-scientist/champion': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_scientist_champion'
-  },
-  '/formation-data-engineer': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_engineer_generaliste'
-  },
-  '/formation-data-engineer/analytics-engineer-databird-datagen': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'analytics_engineer'
-  },
-  '/formation-gen-ai': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'gen_ai'
-  },
-  '/offre-entreprise': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'offre_entreprise'
-  },
-  '/formation/excel': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'outils_excel'
-  },
-  '/formation/power-bi': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'outils_powerbi'
-  },
-  '/formation/google-sheets': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'outils_google_sheets'
-  },
-  '/formation/looker-studio': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'outils_looker_studio'
-  },
-  '/formation/python': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'outils_python'
-  },
-  '/formation/sql': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'outils_sql'
-  },
-  '/formation/tableau-software': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'outils_tableau'
-  },
-  '/certification/excel': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'certification_excel'
-  },
-  '/certification/power-bi': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'certification_powerbi'
-  },
-  '/campus/': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'data_analyst_distance'
-  },
-  '/cours-gratuit/': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'cours_gratuit_général'
-  },
-  '/cours-gratuit/les-bases-de-sql-a-ta-portee': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'cours_gratuit_sql'
-  },
-  '/cours-gratuit/dbt': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'cours_gratuit_dbt'
-  },
-  '/cours-gratuit/excel': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'cours_gratuit_excel'
-  },
-  '/cours-gratuit/le-jargon-de-la-data': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'cours_gratuit_acculturation_data'
-  },
-  '/qui-sommes-nous': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'qui_sommes_nous'
-  },
-  '/parrainage': {
-    utm_source: 'website',
-    utm_medium: 'referral',
-    utm_campaign: 'parrainage'
-  },
-  '/faq': {
-    utm_source: 'website',
-    utm_medium: 'organic_search',
-    utm_campaign: 'faq'
-  },
-  '/c/google/formation-databird': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/formation-data-analyst-temps-partiel': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/formation-sql-databird': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-excel-certifiante': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/formation-data-analyst-temps-plein': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-paris-v2': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-paris': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/formation-certifiante-power-bi': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-power-bi-certifiante-v2': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-power-bi-certifiante': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/partenariat-malt-x-databird': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-a-distance': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-engineer': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/formation-tableau-software-databird': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-tableau-software': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-sql': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-toulouse': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-lille': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-lyon': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-nantes': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-nice': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-rennes': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-grenoble': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-marseille': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-montpellier': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-strasbourg': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/google/formation-data-analyst-bordeaux': {
-    utm_source: 'google',
-    utm_medium: 'paid_search',
-    utm_campaign: ''
-  },
-  '/c/meta/data-recrutement-quel-marche-en-2024': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/c/meta/data-analyst-preparer-son-entretien-dembauche': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/c/meta/salaire-data-analyst': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/c/meta/montees-en-competences': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/c/meta/reconversion': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/c/meta/data-essentials': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/c/meta/formation-data-analyst': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/activation/offre-noel-databird-2024': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/activation/offre-data-ia': {
-    utm_source: '',
-    utm_medium: '',
-    utm_campaign: 'OP_Avril_2025_losts'
-  },
-  '/c/meta/reconversion-recherche-demploi': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  },
-  '/c/meta/data-ia-report': {
-    utm_source: 'facebook',
-    utm_medium: 'paid_social',
-    utm_campaign: ''
-  }
-};
 
-// Fonction pour obtenir les UTMs correspondant au chemin actuel
-function getPathUtms(path) {
-  // Cas spécial pour les pages campus
-  if (path.startsWith('/campus/') && path !== '/campus/') {
-    const cityName = path.split('/').pop();
-    return {
-      ...DEFAULT_UTMS,
-      utm_source: 'website',
-      utm_medium: 'organic_search',
-      utm_campaign: `data_analyst_distance_${cityName}`,
-      utm_content: 'cta_formulaire' 
-    };
-  }
-  
-  // Vérification directe dans la configuration
-  if (PAGE_UTM_CONFIG[path]) {
-    return {...DEFAULT_UTMS, ...PAGE_UTM_CONFIG[path]};
-  }
-  
-  // Valeurs par défaut si aucune correspondance
-  return {...DEFAULT_UTMS};
-}
-
-// Fonction pour obtenir les UTMs de l'URL
-function getUrlUtms() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const utmParams = {};
-  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(param => {
-    if (urlParams.has(param)) utmParams[param] = urlParams.get(param);
-  });
-  return utmParams;
-}
-
-// Fonction pour obtenir les UTMs finaux
-function getFinalUtms() {
-  const storedUtms = JSON.parse(sessionStorage.getItem('initialUtms') || 'null');
-  const urlUtms = getUrlUtms();
-  const pathUtms = getPathUtms(window.location.pathname);
-  
-  // Priorité: 1. UTMs stockés 2. UTMs d'URL 3. UTMs du chemin
-  if (storedUtms) {
-    return storedUtms;
-  } else if (Object.keys(urlUtms).length > 0) {
-    const finalUtms = {...pathUtms, ...urlUtms};
-    sessionStorage.setItem('initialUtms', JSON.stringify(finalUtms));
-    return finalUtms;
-  } else {
-    return pathUtms;
-  }
-}
-
-// Fonction pour ajouter les UTMs au formulaire
-function addUtmsToForm(form) {
-  if (!form) return;
-  
-  const utmParams = getFinalUtms();
-  
-  for (const [key, value] of Object.entries(utmParams)) {
-    let input = form.querySelector(`input[name="${key}"]`);
-    if (!input) {
-      input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      form.appendChild(input);
-    }
-    input.value = value;
-  }
-}
-
-// Fonction pour trouver le formulaire
-function findForm(container) {
-  if (!container) return null;
-  
-  // Recherche dans le conteneur direct
-  const directForm = container.querySelector('form');
-  if (directForm) return directForm;
-  
-  // Recherche dans les iframes
-  const iframes = container.querySelectorAll('iframe');
-  for (let iframe of iframes) {
-    try {
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-      if (iframeDoc) {
-        const iframeForm = iframeDoc.querySelector('form');
-        if (iframeForm) return iframeForm;
-      }
-    } catch (e) {
-      // Erreur de même origine, on continue
-    }
-  }
-  
-  // Fallback sur les éléments qui ressemblent à des formulaires
-  return container.querySelector('.hs-form');
-}
-
-// Fonction pour traiter le planificateur de réunions HubSpot
-function processMeetingsWidget() {
-  const widget = document.querySelector('.meetings-iframe-container iframe');
-  if (!widget) return false;
-  
-  const utms = getFinalUtms();
-  const url = new URL(widget.src);
-  
-  for (const [key, value] of Object.entries(utms)) {
-    url.searchParams.set(key, value);
-  }
-  
-  widget.src = url.toString();
-  return true;
-}
-
-// Fonction principale pour gérer les formulaires
-function processForm() {
-  // Vérifier d'abord si nous avons un widget de réunions
-  if (processMeetingsWidget()) return;
-  
-  // Sinon chercher le formulaire HubSpot
-  const container = document.querySelector('[data-hubspot-form-container="true"]');
-  const form = findForm(container);
-  
-  if (form) {
-    addUtmsToForm(form);
-    
-    // S'assurer que les UTMs sont toujours présents lors de la soumission
-    if (!form._utmListenerAdded) {
-      form.addEventListener('submit', () => addUtmsToForm(form));
-      form._utmListenerAdded = true;
-    }
-  }
-}
-
-// Fonction d'initialisation avec une approche progressive
-function init() {
-  // Première tentative immédiate
-  processForm();
-  
-  // Tentatives additionnelles à différents intervalles
-  [1000, 2000, 3000, 5000].forEach(delay => {
-    setTimeout(processForm, delay);
-  });
-  
-  // Observer les modifications du DOM
-  const observer = new MutationObserver(() => processForm());
-  
-  // Observer le body pour les changements dynamiques
-  observer.observe(document.body, { 
-    childList: true, 
-    subtree: true 
-  });
-  
-  // Arrêter l'observation après 30 secondes pour économiser des ressources
-  setTimeout(() => observer.disconnect(), 30000);
-}
-
-// Démarrer quand le DOM est prêt
-if (document.readyState !== 'loading') {
-  init();
-} else {
-  document.addEventListener('DOMContentLoaded', init);
-}
+// 2. Script UTM (version minifiée avec logs)
+(function(){const u=["utm_source","utm_medium","utm_campaign","utm_term","utm_content"],d={utm_source:"website",utm_medium:"unknown_page",utm_campaign:"general",utm_content:"cta_formulaire",utm_term:""},c=window.PAGE_UTM_CONFIG||{},p=window.location.pathname,g=(p.startsWith("/campus/")&&p!=="/campus/")?{...d,utm_source:"website",utm_medium:"organic_search",utm_campaign:`data_analyst_distance_${p.split("/").pop()}`,utm_content:"cta_formulaire"}:{...d,...(c[p]||{})},s=t=>{const e={};return u.forEach(k=>{const v=new URLSearchParams(location.search).get(k);v&&(e[k]=v)}),e},l=()=>{const e=JSON.parse(sessionStorage.getItem("initialUtms")||"null"),r=s(),t=g;return Object.keys(r).length>0?(sessionStorage.setItem("initialUtms",JSON.stringify({...t,...r})),{...t,...r}):e||t},f=t=>{if(!t)return;const e=l();console.log("[UTM] Injection dans formulaire:",e);for(const[k,v]of Object.entries(e)){let i=t.querySelector(`input[name="${k}"]`);i||(i=document.createElement("input"),i.type="hidden",i.name=k,t.appendChild(i)),i.value=v}},b=e=>{if(!e)return null;const t=e.querySelector("form");if(t)return t;for(const i of e.querySelectorAll("iframe"))try{const d=i.contentDocument||i.contentWindow?.document,f=d?.querySelector("form");if(f)return f}catch{}return e.querySelector(".hs-form")},m=()=>{const i=document.querySelector(".meetings-iframe-container iframe");if(!i)return!1;const e=l(),r=new URL(i.src);for(const[k,v]of Object.entries(e))r.searchParams.set(k,v);return i.src=r.toString(),console.log("[UTM] Iframe meetings modifié:",i.src),!0},a=()=>{if(m())return;const e=document.querySelector('[data-hubspot-form-container="true"]'),t=b(e);t&&(f(t),t._utmListenerAdded||(t.addEventListener("submit",()=>f(t)),t._utmListenerAdded=!0))};document.readyState!=="loading"?(()=>{a();[1e3,2e3,3e3,5e3].forEach(t=>setTimeout(a,t));const o=new MutationObserver(()=>a());o.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=>o.disconnect(),3e4)})():document.addEventListener("DOMContentLoaded",()=>{a();[1e3,2e3,3e3,5e3].forEach(t=>setTimeout(a,t));const o=new MutationObserver(()=>a());o.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=>o.disconnect(),3e4)});})();
