@@ -32,7 +32,6 @@ window.PAGE_UTM_CONFIG = {
   '/qui-sommes-nous': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'qui_sommes_nous' },
   '/parrainage': { utm_source: 'website', utm_medium: 'referral', utm_campaign: 'parrainage' },
   '/faq': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'faq' },
-  '/activation/offre-data-ia': { utm_source: '', utm_medium: '', utm_campaign: 'OP_Avril_2025_losts' },
   '/c/google/formation-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/formation-data-analyst-temps-partiel': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/formation-sql-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
@@ -68,6 +67,8 @@ window.PAGE_UTM_CONFIG = {
   '/c/meta/data-essentials': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
   '/c/meta/formation-data-analyst': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
   '/activation/offre-noel-databird-2024': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/activation/offre-data-ia': { utm_source: '', utm_medium: '', utm_campaign: 'OP_Avril_2025_losts' },
+  '/activation/offre-data-ia-alumni': { utm_source: '', utm_medium: '', utm_campaign: 'OP_Avril_2025_alumni' },
   '/c/meta/reconversion-recherche-demploi': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
   '/c/meta/data-ia-report': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' }
 };
