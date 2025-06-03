@@ -32,6 +32,7 @@ window.PAGE_UTM_CONFIG = {
   '/qui-sommes-nous': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'qui_sommes_nous' },
   '/parrainage': { utm_source: 'website', utm_medium: 'referral', utm_campaign: 'parrainage' },
   '/faq': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'faq' },
+  '/offre-promo-ete-2025': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'OP_ete' },
   '/c/google/formation-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/formation-data-analyst-temps-partiel': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/formation-sql-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
