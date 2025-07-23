@@ -14,6 +14,8 @@ window.PAGE_UTM_CONFIG = {
   '/formation-data-engineer/analytics-engineer-databird-datagen': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'analytics_engineer' },
   '/formation-data-engineer/data-orchestration': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_orchestration' },
   '/formation-gen-ai': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai' },
+  '/formation-ia/agent-ia': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'agent_ia' },
+  '/formation-ia/ia-champion': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia_champion' },
   '/offre-entreprise': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'offre_entreprise' },
   '/formation/excel': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_excel' },
   '/formation/power-bi': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_powerbi' },
