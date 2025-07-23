@@ -52,6 +52,8 @@ window.PAGE_UTM_CONFIG = {
   '/c/formation-tableau-software-databird': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/google/formation-tableau-software': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/google/formation-sql': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/formation-ia/agent-ia': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
+  '/c/formation-ia/ia-champion': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/google/formation-data-analyst-toulouse': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/google/formation-data-analyst-lille': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
   '/c/google/formation-data-analyst-lyon': { utm_source: 'google', utm_medium: 'paid_search', utm_campaign: '' },
