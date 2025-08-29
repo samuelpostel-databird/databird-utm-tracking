@@ -78,6 +78,7 @@ window.PAGE_UTM_CONFIG = {
   '/activation/offre-data-ia-alumni-dae': { utm_source: '', utm_medium: '', utm_campaign: 'OP_Avril_2025_alumni_dae' },
   '/activation/offre-data-ia-alumni-outils-expert': { utm_source: '', utm_medium: '', utm_campaign: 'OP_Avril_2025_alumni_outils_expert' },
   '/activation/offre-data-ia-alumni-alumni-metiers': { utm_source: '', utm_medium: '', utm_campaign: 'OP_Avril_2025_alumni_alumni_metiers' },
+  '/activation/formations-ia': { utm_source: '', utm_medium: '', utm_campaign: 'offre_IA_sept2025' },
   '/c/meta/reconversion-recherche-demploi': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
   '/c/meta/data-ia-report': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' }
 };
