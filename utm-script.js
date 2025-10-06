@@ -3,6 +3,7 @@
 // 1. Configuration globale des UTMs par page
 window.PAGE_UTM_CONFIG = {
   '/': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'homepage' },
+  '/rdv': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'prise_rdv' },
   '/formation-data-analyst': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_generaliste' },
   '/formation-data-analyst/paris': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_paris' },
   '/formation-data-analyst/a-distance': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_distance' },
