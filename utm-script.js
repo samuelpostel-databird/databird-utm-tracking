@@ -80,7 +80,14 @@ window.PAGE_UTM_CONFIG = {
   '/activation/offre-data-ia-alumni-alumni-metiers': { utm_source: '', utm_medium: '', utm_campaign: 'OP_Avril_2025_alumni_alumni_metiers' },
   '/activation/formations-ia': { utm_source: '', utm_medium: '', utm_campaign: 'offre_IA_sept2025' },
   '/c/meta/reconversion-recherche-demploi': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
-  '/c/meta/data-ia-report': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' }
+  '/c/meta/data-ia-report': { utm_source: 'facebook', utm_medium: 'paid_social', utm_campaign: '' },
+  '/formations-ia-metier/marketing': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_marketing' },
+  '/formations-ia-metier/finance': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_finance' },
+  '/formations-ia-metier/rh': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_rh' },
+  '/formations-ia-metier/sales': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_sales' },
+  '/formation-gen-ai-generaliste': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_generaliste_metiers' },
+  '/formations-ia-metier/ia-agent-builder-no-code': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia-agent-builder-no-code' },
+  '/formations-ia-metier/ia-product-builder-no-code': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia-product-builder-no-code' }
 };
 
 
