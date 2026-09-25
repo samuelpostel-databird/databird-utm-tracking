@@ -141,14 +141,8 @@ window.PAGE_UTM_CONFIG = {
   }
 
   function resolveUtms() {
-    const stored = JSON.parse(sessionStorage.getItem("initialUtms") || "null");
     const urlUtms = readUrlUtms();
-    if (Object.keys(urlUtms).length > 0) {
-      const merged = { ...pageUtms, ...urlUtms };
-      sessionStorage.setItem("initialUtms", JSON.stringify(merged));
-      return merged;
-    }
-    return stored || pageUtms;
+    return { ...pageUtms, ...urlUtms };
   }
 
   function applyUtmsToUrl() {
