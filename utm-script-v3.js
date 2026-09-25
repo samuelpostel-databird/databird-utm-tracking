@@ -112,7 +112,7 @@ window.PAGE_UTM_CONFIG = {
   '/nos-formations/google-sheets': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_google_sheets' }
 };
 
-// 2. Script UTM v2 (réécriture d'URL, compatible avec les formulaires HubSpot en iframe)
+// 2. Script UTM v3 (détecte les changements d'URL même sans reload complet de page)
 (function () {
   const utmKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
 
@@ -125,24 +125,31 @@ window.PAGE_UTM_CONFIG = {
   };
 
   const config = window.PAGE_UTM_CONFIG || {};
-  const path = window.location.pathname;
 
-  const pageUtms = (path.startsWith("/campus/") && path !== "/campus/")
-    ? { ...defaults, utm_source: "website", utm_medium: "organic_search", utm_campaign: `data_analyst_distance_${path.split("/").pop()}`, utm_content: "cta_formulaire" }
-    : { ...defaults, ...(config[path] || {}) };
+  // Recalculé à chaque appel à partir du chemin ACTUEL (jamais figé)
+  function getPageUtms() {
+    const path = window.location.pathname;
+    if (path.startsWith("/campus/") && path !== "/campus/") {
+      return { ...defaults, utm_source: "website", utm_medium: "organic_search", utm_campaign: `data_analyst_distance_${path.split("/").pop()}`, utm_content: "cta_formulaire" };
+    }
+    return { ...defaults, ...(config[path] || {}) };
+  }
 
+  // Lit les vrais utm_* de l'URL, MAIS ignore ceux qu'on a nous-mêmes écrits
+  // (marqués avec _utmw=1) pour ne jamais les confondre avec un vrai lien publicitaire.
   function readUrlUtms() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("_utmw") === "1") return {};
     const found = {};
     utmKeys.forEach((k) => {
-      const v = new URLSearchParams(window.location.search).get(k);
+      const v = params.get(k);
       if (v) found[k] = v;
     });
     return found;
   }
 
   function resolveUtms() {
-    const urlUtms = readUrlUtms();
-    return { ...pageUtms, ...urlUtms };
+    return { ...getPageUtms(), ...readUrlUtms() };
   }
 
   function applyUtmsToUrl() {
@@ -154,6 +161,10 @@ window.PAGE_UTM_CONFIG = {
         url.searchParams.set(key, value);
         changed = true;
       }
+    }
+    if (url.searchParams.get("_utmw") !== "1") {
+      url.searchParams.set("_utmw", "1");
+      changed = true;
     }
     if (changed && window.history && window.history.replaceState) {
       window.history.replaceState(null, "", url.toString());
@@ -170,17 +181,29 @@ window.PAGE_UTM_CONFIG = {
       url.searchParams.set(key, value);
     }
     iframe.src = url.toString();
-    console.log("[UTM] Iframe meetings modifié :", iframe.src);
     return true;
+  }
+
+  // ✅ Détecte tout changement d'URL, même sans rechargement complet de page
+  // (transitions AJAX/pushState utilisées sur certains templates du site).
+  let lastPath = window.location.pathname;
+  function checkForNavigation() {
+    if (window.location.pathname !== lastPath) {
+      lastPath = window.location.pathname;
+      applyUtmsToUrl();
+      handleMeetingsIframe();
+    }
   }
 
   function init() {
     applyUtmsToUrl();
     handleMeetingsIframe();
-    [1000, 2000, 3000, 5000, 10000].forEach((t) => setTimeout(handleMeetingsIframe, t));
-    const observer = new MutationObserver(() => handleMeetingsIframe());
+    setInterval(checkForNavigation, 400); // vérifie 2-3x par seconde, léger et fiable
+    const observer = new MutationObserver(() => {
+      checkForNavigation();
+      handleMeetingsIframe();
+    });
     observer.observe(document.body, { childList: true, subtree: true });
-    setTimeout(() => observer.disconnect(), 10 * 60 * 1000);
   }
 
   if (document.readyState !== "loading") {
