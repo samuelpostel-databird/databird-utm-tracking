@@ -88,6 +88,23 @@ window.PAGE_UTM_CONFIG = {
   '/formation-gen-ai-generaliste': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_generaliste_metiers' },
   '/formations-ia-metier/ia-agent-builder-no-code': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia-agent-builder-no-code' },
   '/formations-ia-metier/ia-product-builder-no-code': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia-product-builder-no-code' }
+  '/nos-formations/ia-product-builder-no-code': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia-product-builder-no-code' },
+  '/nos-formations/ia-agent-builder-no-code': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia-agent-builder-no-code' },
+  '/nos-formations/ia-generative-marketing': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_marketing' },
+  '/nos-formations/ia-generative-finance': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_finance' },
+  '/nos-formations/ia-generative-rh': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_rh' },
+  '/nos-formations/ia-generative-ventes': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai_sales' },
+  '/nos-formations/data-analytics-essentials': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_essentials' },
+  '/nos-formations/data-analytics-champion': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_champion' },
+  '/nos-formations/analytics-engineer': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'analytics_engineer' },
+  '/nos-formations/data-science-ia': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_scientist_champion' },
+  '/nos-formations/power-bi': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_powerbi' },
+  '/nos-formations/excel': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_excel' },
+  '/nos-formations/python': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_python' },
+  '/nos-formations/sql': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_sql' },
+  '/nos-formations/tableau-software': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_tableau' },
+  '/nos-formations/looker-studio': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_looker_studio' },
+  '/nos-formations/google-sheets': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_google_sheets' },
 };
 
 
