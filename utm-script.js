@@ -108,7 +108,143 @@ window.PAGE_UTM_CONFIG = {
 };
 
 
+// 2. Script UTM (version lisible, avec logs + fix de robustesse sur le timing d'injection)
+(function () {
+  const utmKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
 
+  const defaults = {
+    utm_source: "website",
+    utm_medium: "unknown_page",
+    utm_campaign: "general",
+    utm_content: "cta_formulaire",
+    utm_term: ""
+  };
 
-// 2. Script UTM (version minifiée avec logs)
-(function(){const u=["utm_source","utm_medium","utm_campaign","utm_term","utm_content"],d={utm_source:"website",utm_medium:"unknown_page",utm_campaign:"general",utm_content:"cta_formulaire",utm_term:""},c=window.PAGE_UTM_CONFIG||{},p=window.location.pathname,g=(p.startsWith("/campus/")&&p!=="/campus/")?{...d,utm_source:"website",utm_medium:"organic_search",utm_campaign:`data_analyst_distance_${p.split("/").pop()}`,utm_content:"cta_formulaire"}:{...d,...(c[p]||{})},s=t=>{const e={};return u.forEach(k=>{const v=new URLSearchParams(location.search).get(k);v&&(e[k]=v)}),e},l=()=>{const e=JSON.parse(sessionStorage.getItem("initialUtms")||"null"),r=s(),t=g;return Object.keys(r).length>0?(sessionStorage.setItem("initialUtms",JSON.stringify({...t,...r})),{...t,...r}):e||t},f=t=>{if(!t)return;const e=l();console.log("[UTM] Injection dans formulaire:",e);for(const[k,v]of Object.entries(e)){let i=t.querySelector(`input[name="${k}"]`);i||(i=document.createElement("input"),i.type="hidden",i.name=k,t.appendChild(i)),i.value=v}},b=e=>{if(!e)return null;const t=e.querySelector("form");if(t)return t;for(const i of e.querySelectorAll("iframe"))try{const d=i.contentDocument||i.contentWindow?.document,f=d?.querySelector("form");if(f)return f}catch{}return e.querySelector(".hs-form")},m=()=>{const i=document.querySelector(".meetings-iframe-container iframe");if(!i)return!1;const e=l(),r=new URL(i.src);for(const[k,v]of Object.entries(e))r.searchParams.set(k,v);return i.src=r.toString(),console.log("[UTM] Iframe meetings modifié:",i.src),!0},a=()=>{if(m())return;const e=document.querySelector('[data-hubspot-form-container="true"]'),t=b(e);t&&(f(t),t._utmListenerAdded||(t.addEventListener("submit",()=>f(t)),t._utmListenerAdded=!0))};document.readyState!=="loading"?(()=>{a();[1e3,2e3,3e3,5e3].forEach(t=>setTimeout(a,t));const o=new MutationObserver(()=>a());o.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=>o.disconnect(),3e4)})():document.addEventListener("DOMContentLoaded",()=>{a();[1e3,2e3,3e3,5e3].forEach(t=>setTimeout(a,t));const o=new MutationObserver(()=>a());o.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=>o.disconnect(),3e4)});})();
+  const config = window.PAGE_UTM_CONFIG || {};
+  const path = window.location.pathname;
+
+  // Valeurs UTM propres à la page courante (config spécifique ou fallback "campus" ou defaults)
+  const pageUtms = (path.startsWith("/campus/") && path !== "/campus/")
+    ? { ...defaults, utm_source: "website", utm_medium: "organic_search", utm_campaign: `data_analyst_distance_${path.split("/").pop()}`, utm_content: "cta_formulaire" }
+    : { ...defaults, ...(config[path] || {}) };
+
+  // Lit les vrais utm_* présents dans l'URL (query string), s'il y en a
+  function readUrlUtms() {
+    const found = {};
+    utmKeys.forEach((k) => {
+      const v = new URLSearchParams(location.search).get(k);
+      if (v) found[k] = v;
+    });
+    return found;
+  }
+
+  // Résout les UTM à utiliser : priorité aux vrais UTM d'URL (persistés en session pour tout le parcours),
+  // sinon retombe sur la config de la page courante.
+  function resolveUtms() {
+    const stored = JSON.parse(sessionStorage.getItem("initialUtms") || "null");
+    const urlUtms = readUrlUtms();
+    const current = pageUtms;
+    if (Object.keys(urlUtms).length > 0) {
+      const merged = { ...current, ...urlUtms };
+      sessionStorage.setItem("initialUtms", JSON.stringify(merged));
+      return merged;
+    }
+    return stored || current;
+  }
+
+  // Injecte les champs cachés utm_* dans un formulaire donné
+  function injectIntoForm(form) {
+    if (!form) return;
+    const utms = resolveUtms();
+    console.log("[UTM] Injection dans formulaire:", utms);
+    for (const [key, value] of Object.entries(utms)) {
+      let input = form.querySelector(`input[name="${key}"]`);
+      if (!input) {
+        input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        form.appendChild(input);
+      }
+      input.value = value;
+    }
+  }
+
+  // Trouve le <form> dans un conteneur donné (direct, iframe, ou classe .hs-form)
+  function findForm(container) {
+    if (!container) return null;
+    const direct = container.querySelector("form");
+    if (direct) return direct;
+    for (const iframe of container.querySelectorAll("iframe")) {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        const form = doc?.querySelector("form");
+        if (form) return form;
+      } catch {
+        // cross-origin iframe, on ignore
+      }
+    }
+    return container.querySelector(".hs-form");
+  }
+
+  // Cas particulier : widget de meetings HubSpot en iframe, on modifie directement l'URL de l'iframe
+  function handleMeetingsIframe() {
+    const iframe = document.querySelector(".meetings-iframe-container iframe");
+    if (!iframe) return false;
+    const utms = resolveUtms();
+    const url = new URL(iframe.src);
+    for (const [key, value] of Object.entries(utms)) {
+      url.searchParams.set(key, value);
+    }
+    iframe.src = url.toString();
+    console.log("[UTM] Iframe meetings modifié:", iframe.src);
+    return true;
+  }
+
+  // Tentative "préventive" : essaie d'injecter dès que le formulaire apparaît dans le DOM
+  function tryInject() {
+    if (handleMeetingsIframe()) return;
+    const container = document.querySelector('[data-hubspot-form-container="true"]');
+    const form = findForm(container);
+    if (form) {
+      injectIntoForm(form);
+      if (!form._utmListenerAdded) {
+        form.addEventListener("submit", () => injectIntoForm(form));
+        form._utmListenerAdded = true;
+      }
+    }
+  }
+
+  // ✅ Filet de sécurité : quel que soit le moment où le formulaire apparaît (même après
+  // l'ouverture tardive d'une popup/modal, bien après le chargement de la page), on capte
+  // TOUT événement submit sur la page en amont de l'envoi et on injecte les champs à ce moment-là.
+  document.addEventListener(
+    "submit",
+    (evt) => {
+      const form = evt.target;
+      if (!form || form.tagName !== "FORM") return;
+      const isHubspotForm =
+        form.classList.contains("hs-form") ||
+        !!form.closest('[data-hubspot-form-container="true"]');
+      if (isHubspotForm) {
+        injectIntoForm(form);
+      }
+    },
+    true // capture: true, pour agir avant que HubSpot n'envoie les données
+  );
+
+  function init() {
+    tryInject();
+    [1000, 2000, 3000, 5000].forEach((t) => setTimeout(tryInject, t));
+    const observer = new MutationObserver(() => tryInject());
+    observer.observe(document.body, { childList: true, subtree: true });
+    // Fenêtre d'observation étendue à 10 minutes (au lieu de 30s) pour couvrir les formulaires
+    // ouverts tardivement (popups/CTA cliqués après lecture de la page).
+    setTimeout(() => observer.disconnect(), 10 * 60 * 1000);
+  }
+
+  if (document.readyState !== "loading") {
+    init();
+  } else {
+    document.addEventListener("DOMContentLoaded", init);
+  }
+})();
