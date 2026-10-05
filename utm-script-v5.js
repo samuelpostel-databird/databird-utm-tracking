@@ -109,6 +109,11 @@ window.PAGE_UTM_CONFIG = {
   '/nos-formations/sql': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_sql' },
   '/nos-formations/tableau-software': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_tableau' },
   '/nos-formations/looker-studio': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_looker_studio' },
+  '/nos-formations/ia-generative': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'gen_ai' },
+  '/nos-formations/agent-ia': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'agent_ia' },
+  '/nos-formations/ia-champion': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia_champion' },
+  '/nos-formations/data-analyst': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_generaliste' },
+  '/nos-formations/data-scientist': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_scientist_generaliste' },
   '/nos-formations/google-sheets': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_google_sheets' }
 };
 
