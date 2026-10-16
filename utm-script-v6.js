@@ -140,6 +140,16 @@ window.PAGE_UTM_CONFIG = {
     return { ...defaults, ...(config[path] || {}) };
   }
 
+  // Mémorise les UTM "externes" (vraie pub, newsletter, etc.) pour toute la session de navigation.
+  // Sans ça, dès la 2e page vue les UTM de la pub étaient remplacés par les UTM "website / organic_search".
+  const STORE_KEY = "db_ext_utms";
+  function readStored() {
+    try { return JSON.parse(sessionStorage.getItem(STORE_KEY) || "{}"); } catch (e) { return {}; }
+  }
+  function writeStored(obj) {
+    try { sessionStorage.setItem(STORE_KEY, JSON.stringify(obj)); } catch (e) {}
+  }
+
   // Lit les vrais utm_* de l'URL, MAIS ignore ceux qu'on a nous-mêmes écrits
   // (marqués avec _utmw=1) pour ne jamais les confondre avec un vrai lien publicitaire.
   function readUrlUtms() {
@@ -153,8 +163,11 @@ window.PAGE_UTM_CONFIG = {
     return found;
   }
 
+  // Priorité : UTM externes de l'URL > UTM externes mémorisés > UTM par défaut de la page
   function resolveUtms() {
-    return { ...getPageUtms(), ...readUrlUtms() };
+    const fromUrl = readUrlUtms();
+    if (Object.keys(fromUrl).length) writeStored(fromUrl); // nouveau clic externe : il remplace le précédent
+    return { ...getPageUtms(), ...readStored(), ...fromUrl };
   }
 
   function applyUtmsToUrl() {
