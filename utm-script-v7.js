@@ -114,7 +114,8 @@ window.PAGE_UTM_CONFIG = {
   '/nos-formations/ia-champion': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'ia_champion' },
   '/nos-formations/data-analyst': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_analytics_generaliste' },
   '/nos-formations/data-scientist': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'data_scientist_generaliste' },
-  '/nos-formations/google-sheets': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_google_sheets' }
+  '/nos-formations/google-sheets': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'outils_google_sheets' },
+  '/black-friday': { utm_source: 'website', utm_medium: 'organic_search', utm_campaign: 'lp_black_friday' }
 };
 
 // 2. Script UTM v3 (détecte les changements d'URL même sans reload complet de page)
